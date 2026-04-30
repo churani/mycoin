@@ -34,6 +34,7 @@ abstract contract SiHiBase is ERC20, ERC20Burnable, ERC20Pausable, Ownable {
         Ownable(initialOwner)
     {
         _mint(initialOwner, INITIAL_SUPPLY);
+        // maxBurnSupply = INITIAL_SUPPLY * 50 / 100; 
     }
 
     /// @notice owner 만 추가 발행
