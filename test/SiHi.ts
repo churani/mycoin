@@ -10,9 +10,34 @@ describe("SiHi", async function () {
   const [owner, alice, bob] = await viem.getWalletClients();
 
   // 네트워크만 가상이고 실제 sol호출
+  // constructor: (address initialOwner, uint256 _maxBurnSupply)
+  const TEST_MAX_BURN_SUPPLY = 500_000n * 10n ** 18n;   // 50만 SHI
+
   async function deploySiHi() {
-    return viem.deployContract("SiHi", [owner.account.address]);
+      const maxBurnSupply = 500_000n * 10n ** 18n;  // 50만 SHI
+      return viem.deployContract("SiHi", [
+          owner.account.address,
+          maxBurnSupply,                              // ← 두 번째 인자 추가
+      ]);
   }
+
+  it("constructor: maxBurnSupply = 0 이면 revert", async function () {
+      await assert.rejects(
+          viem.deployContract("SiHi", [owner.account.address, 0n])
+      );
+  });
+
+  it("maxBurnSupply 가 정확히 저장되는지", async function () {
+      const sihi = await deploySiHi();
+      const stored = await sihi.read.maxBurnSupply();
+      assert.equal(stored, TEST_MAX_BURN_SUPPLY);
+  });
+
+  it("totalBurned 초기값 = 0", async function () {
+      const sihi = await deploySiHi();
+      const burned = await sihi.read.totalBurned();
+      assert.equal(burned, 0n);
+  });
 
   // ════════════════════════════════════════════════════════════
   // 1. 배포 + 메타데이터
