@@ -14,9 +14,15 @@ async function main() {
     console.log("잔액:", balance.toString(), "wei");
 
     // 배포
+    // constructor: (address initialOwner, uint256 _maxBurnSupply)
+    const maxBurnSupply = 500_000n * 10n ** 18n;   // 50만 SHI (총 발행의 50%)
     console.log("배포 중...");
+    console.log("  initialOwner :", deployer.account.address);
+    console.log("  maxBurnSupply:", maxBurnSupply.toString(), "wei (=", maxBurnSupply / 10n**18n, "SHI)");
+
     const sihi = await viem.deployContract("SiHi", [
-        deployer.account.address
+        deployer.account.address,
+        maxBurnSupply,
     ]);
 
     console.log("═══════════════════════════════════════");

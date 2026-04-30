@@ -8,11 +8,19 @@ export default defineConfig({
   plugins: [hardhatToolboxViemPlugin],
   solidity: {
     profiles: {
-      default: { version: "0.8.28" },
-      production: {
+      // 개발 — optimizer 약하게 (코드 크기 + 디버깅 편의)
+      default: {
         version: "0.8.28",
         settings: {
           optimizer: { enabled: true, runs: 200 },
+        },
+      },
+      // 메인넷 배포용 — 실행 가스 절감 (자주 호출되는 transfer 등)
+      production: {
+        version: "0.8.28",
+        settings: {
+          optimizer: { enabled: true, runs: 1000 },
+          viaIR: true,   // 더 강한 최적화 (컴파일 느림, 결과 작음)
         },
       },
     },
